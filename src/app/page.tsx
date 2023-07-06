@@ -60,7 +60,3 @@ export default function Home() {
     
   )
 }
-
-{/* <main className='min-w-full min-h-screen'>
-      <
-    </main> */}

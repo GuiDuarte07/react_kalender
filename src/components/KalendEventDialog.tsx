@@ -15,16 +15,17 @@ import { MultiInputDateTimeRangeField } from '@mui/x-date-pickers-pro/MultiInput
 import {useState} from 'react'
 
 interface IKalendEventDialog {
-  newEvent: NewEventClickData
+  newEvent: boolean
+  event: {startAt: string, endAt: string, summary?: string}
   onSubmitEvent: (startAt: string, endAt: string, summary: string) => void
   onCancelEvent: () => void
 }
 
-export default function KalendEventDialog({newEvent, onSubmitEvent, onCancelEvent}: IKalendEventDialog) {
+export default function KalendEventDialog({event, onSubmitEvent, onCancelEvent}: IKalendEventDialog) {
 
-  const [startDate, setStartDate] = useState(dayjs(newEvent.startAt))
-  const [endDate, setEndDate] = useState(dayjs(newEvent.endAt))
-  const [summary, setSummary] = useState('');
+  const [startDate, setStartDate] = useState(dayjs(event.startAt))
+  const [endDate, setEndDate] = useState(dayjs(event.endAt))
+  const [summary, setSummary] = useState(event.summary ?? '');
   
   return (
       <Dialog open={true}>
