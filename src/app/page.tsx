@@ -1,18 +1,20 @@
 "use client"
 import { Calendar } from '@/components/Calendar'
+import KalendEventDialog from '@/components/KalendEventDialog';
 import MiniDrawer from '@/components/Drawer';
 import { Container } from '@mui/material'
-import MuiDrawer from '@mui/material/Drawer';
+import { useState } from 'react'
 
 
 export default function Home() {
+  const [eventDialogOpen, setEventDialogOpen] = useState(false)
+  
   return (
     <main className='min-w-full min-h-screen flex'>
-      <Container>
+      <KalendEventDialog/>
       <MiniDrawer/>
-      </Container>
       <Container maxWidth="xl">
-      <section className='w-full h-[500px]'><Calendar/></section>
+      <section className='w-full h-screen'><Calendar/></section>
       </Container>
     </main>
     
