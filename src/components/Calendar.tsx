@@ -1,28 +1,17 @@
+import { IKalendEvent } from '@/interfaces/Kalend'
 import Kalend, { CalendarView } from 'kalend'
+import { NewEventClickData } from 'kalend/common/interface'
 import 'kalend/dist/styles/index.css'
 
-const events = [
-  {
-      id: 1,
-      startAt: '2023-07-21T18:00:00.000Z',
-      endAt: '2023-07-21T19:00:00.000Z',
-      summary: 'test',
-      color: 'blue',
-      calendarID: 'work'
-  },
-  {
-      id: 2,
-      startAt: '2023-07-21T18:00:00.000Z',
-      endAt: '2023-07-21T19:00:00.000Z',
-      summary: 'test',
-      color: 'blue',
-  }
-]
+interface ICalendar {
+  startNewEvent: (e: NewEventClickData) => void
+  events: IKalendEvent[]
+}
 
-export const Calendar = () => {
+export const Calendar = ({startNewEvent, events}: ICalendar) => {
   return <Kalend
       onEventClick={(e) => console.log(e, "onEventClick")}
-      onNewEventClick={(e) => console.log(e, "onNewEventClick")}
+      onNewEventClick={(newEvent) => startNewEvent(newEvent)}
       events={events}
       initialDate={new Date().toISOString()}
       hourHeight={60}
