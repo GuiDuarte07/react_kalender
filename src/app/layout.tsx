@@ -1,3 +1,4 @@
+import { EventContextProvider } from '@/context/EventContext'
 import './globals.css'
 import { Inter } from 'next/font/google'
 
@@ -15,7 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body id='__next' className={inter.className}>{children}</body>
+      <EventContextProvider>
+        <body id='__next' className={inter.className}>{children}</body>
+      </EventContextProvider>
     </html>
   )
 }
