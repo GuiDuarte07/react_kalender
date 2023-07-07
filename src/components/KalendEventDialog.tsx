@@ -14,6 +14,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MultiInputDateTimeRangeField } from '@mui/x-date-pickers-pro/MultiInputDateTimeRangeField';
 import {useState} from 'react'
 import ClearIcon from '@mui/icons-material/Clear';
+import AlertDialog from './AlertDialog';
 
 
 type IOnEditEvent = (id: number, startAt: string, endAt: string, summary: string) => void
@@ -38,6 +39,7 @@ export default function KalendEventDialog({ newEvent, event, onCancelEvent, ...r
   const [startDate, setStartDate] = useState(dayjs(event.startAt))
   const [endDate, setEndDate] = useState(dayjs(event.endAt))
   const [summary, setSummary] = useState((!newEvent ? event.summary : ''))
+  const [deleteAlert, setDeleteAlert] = useState(false);
 
   function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -55,9 +57,20 @@ export default function KalendEventDialog({ newEvent, event, onCancelEvent, ...r
       throw new Error("invalid props returned")
     }
   }
+
+  function handleDeleteEvent() {
+    setDeleteAlert(false)
+  }
   
   return (
       <Dialog open={true}>
+        {deleteAlert && 
+          <AlertDialog 
+            title='Deseja excluir esse evento' 
+            handleClose={() => setDeleteAlert(false)}
+            handleConfirm={handleDeleteEvent}
+          />
+        }
         <form onSubmit={(e) => submit(e)}>
           <DialogTitle>{newEvent ? 'Novo Evento' : 'Editar Evento'}</DialogTitle>
           <DialogContent>
@@ -88,7 +101,7 @@ export default function KalendEventDialog({ newEvent, event, onCancelEvent, ...r
 
             <TextField autoFocus  className='w-full mt-8' placeholder='Insira um resumo para esse evento' value={summary} onChange={e => setSummary(e.target.value)} />
 
-            {!newEvent && <Button className='mt-4' variant="text"><ClearIcon/> Excluir esse evento</Button>}
+            {!newEvent && <Button onClick={() => setDeleteAlert(true)} className='mt-4' variant="text"><ClearIcon/> Excluir esse evento</Button>}
 
           </DialogContent>
           <DialogActions>
