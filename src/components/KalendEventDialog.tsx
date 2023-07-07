@@ -14,23 +14,52 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MultiInputDateTimeRangeField } from '@mui/x-date-pickers-pro/MultiInputDateTimeRangeField';
 import {useState} from 'react'
 
-interface IKalendEventDialog {
-  newEvent: boolean
-  event: {startAt: string, endAt: string, summary?: string}
-  onSubmitEvent: (startAt: string, endAt: string, summary: string) => void
-  onCancelEvent: () => void
-}
 
-export default function KalendEventDialog({event, onSubmitEvent, onCancelEvent}: IKalendEventDialog) {
+type IOnEditEvent = (id: number, startAt: string, endAt: string, summary: string) => void
+type IOnSubmitEvent = (startAt: string, endAt: string, summary: string) => void
+
+type IKalendEventDialog = 
+  | {
+  newEvent: true;
+  event: {startAt: string, endAt: string};
+  onSubmitEvent: IOnSubmitEvent;
+  onCancelEvent: () => void;
+  } 
+  | {
+    newEvent: false;
+    id: number;
+    event: {id: number, startAt: string, endAt: string, summary: string};
+    onEditEvent: IOnEditEvent
+    onCancelEvent: () => void;
+  }
+
+export default function KalendEventDialog({ newEvent, event, onCancelEvent, ...rest}: IKalendEventDialog) {
 
   const [startDate, setStartDate] = useState(dayjs(event.startAt))
   const [endDate, setEndDate] = useState(dayjs(event.endAt))
-  const [summary, setSummary] = useState(event.summary ?? '');
+  const [summary, setSummary] = useState((!newEvent ? event.summary : ''))
+
+  function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (summary.length < 3) return;
+    
+    if ('onSubmitEvent' in rest) {
+      const onSubmitEvent = rest.onSubmitEvent;
+      
+      onSubmitEvent(startDate.toISOString(), endDate.toISOString(), summary)
+    }
+    else if ('onEditEvent' in rest && !newEvent) {
+      const onEditEvent = rest.onEditEvent;
+      onEditEvent(event.id, startDate.toISOString(), endDate.toISOString(), summary)
+    } else {
+      throw new Error("invalid props returned")
+    }
+  }
   
   return (
       <Dialog open={true}>
-        <form onSubmit={(e) => {e.preventDefault(); onSubmitEvent(startDate.toISOString(), endDate.toISOString(), summary)}}>
-          <DialogTitle>Novo evento</DialogTitle>
+        <form onSubmit={(e) => submit(e)}>
+          <DialogTitle>{newEvent ? 'Novo Evento' : 'Editar Evento'}</DialogTitle>
           <DialogContent>
             <DialogContentText>
 

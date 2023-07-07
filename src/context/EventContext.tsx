@@ -23,13 +23,13 @@ const eventsExample: IKalendEvent[] = [
   }
 ]
 
-interface IEventContext {
-  eventState: IKalendEvent
+export interface IEventContext {
+  eventState: IKalendEvent[]
   createNewEvent: (startAt: string, endAt: string, summary: string) => void
   editEvent: (id: number, startAt: string, endAt: string, summary: string) => void
 }
 
-const EventContext = createContext<IEventContext | {}>({});
+const EventContext = createContext<IEventContext | null>(null);
 
 
 export const EventContextProvider = ({ children }: IEventContextProvider) => {
