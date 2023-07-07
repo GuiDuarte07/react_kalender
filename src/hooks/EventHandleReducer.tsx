@@ -21,13 +21,13 @@ function eventHandleReducer(state: IKalendEvent[], action: Action) {
     
     case EventReducerActionTypes.EditEvent:
       const index = newState.findIndex((event) => event.id === action.editEvent?.id)
-      if (-1) break;
+      console.log(index, action.editEvent?.id)
+      if (index === -1) break;
       newState[index].startAt = action.editEvent.startAt
       newState[index].endAt = action.editEvent.endAt
       newState[index].summary = action.editEvent.summary
       break;
-  } 
-
+  }
   return newState
 }
 

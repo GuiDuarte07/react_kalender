@@ -1,6 +1,8 @@
+'use client'
+
 import eventHandleReducer, { EventReducerActionTypes } from "@/hooks/EventHandleReducer";
 import { IKalendEvent } from "@/interfaces/Kalend";
-import React, { createContext, useState, useReducer } from "react"
+import React, { createContext, useReducer } from "react"
 
 interface IEventContextProvider {
   children: React.ReactNode
@@ -25,7 +27,7 @@ const eventsExample: IKalendEvent[] = [
 
 export interface IEventContext {
   eventState: IKalendEvent[]
-  createNewEvent: (startAt: string, endAt: string, summary: string) => void
+  createEvent: (startAt: string, endAt: string, summary: string) => void
   editEvent: (id: number, startAt: string, endAt: string, summary: string) => void
 }
 
@@ -36,7 +38,7 @@ export const EventContextProvider = ({ children }: IEventContextProvider) => {
 
   const [eventState, eventDispatch] = useReducer(eventHandleReducer, eventsExample)
  
-  function createNewEvent(startAt: string, endAt: string, summary: string) {
+  function createEvent(startAt: string, endAt: string, summary: string) {
     eventDispatch({type: EventReducerActionTypes.NewEvent, newEvent: {startAt, endAt, summary}})
   }
 
@@ -45,7 +47,7 @@ export const EventContextProvider = ({ children }: IEventContextProvider) => {
   }
 
   return (
-    <EventContext.Provider value={{eventState, createNewEvent, editEvent}}>
+    <EventContext.Provider value={{eventState, createEvent, editEvent}}>
       {children}
     </EventContext.Provider>
   )

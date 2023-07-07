@@ -27,7 +27,6 @@ type IKalendEventDialog =
   } 
   | {
     newEvent: false;
-    id: number;
     event: {id: number, startAt: string, endAt: string, summary: string};
     onEditEvent: IOnEditEvent
     onCancelEvent: () => void;
