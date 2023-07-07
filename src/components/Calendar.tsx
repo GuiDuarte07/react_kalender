@@ -18,8 +18,6 @@ export const Calendar = ({ startNewEvent, startEditEvent, events }: ICalendar) =
       hourHeight={60}
       initialView={CalendarView.WEEK}
       disabledViews={[CalendarView.DAY]}
-      onSelectView={(e) => console.log(e, "onSelectView")}
-      onPageChange={(e) => console.log(e, "onPageChange")}
       timeFormat={'24'}
       weekDayStart={'Monday'}
       calendarIDsHidden={['work']}
