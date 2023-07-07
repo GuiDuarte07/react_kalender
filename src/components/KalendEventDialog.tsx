@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -6,19 +5,20 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { NewEventClickData } from 'kalend/common/interface';
 import dayjs from 'dayjs';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MultiInputDateTimeRangeField } from '@mui/x-date-pickers-pro/MultiInputDateTimeRangeField';
-import {useState} from 'react'
+import { useState, useContext } from 'react'
 import ClearIcon from '@mui/icons-material/Clear';
 import AlertDialog from './AlertDialog';
+import EventContext, { IEventContext } from '@/context/EventContext';
 
 
 type IOnEditEvent = (id: number, startAt: string, endAt: string, summary: string) => void
 type IOnSubmitEvent = (startAt: string, endAt: string, summary: string) => void
+type IOnDelteEvent = (id: number) => void
 
 type IKalendEventDialog = 
   | {
@@ -32,14 +32,14 @@ type IKalendEventDialog =
     event: {id: number, startAt: string, endAt: string, summary: string};
     onEditEvent: IOnEditEvent
     onCancelEvent: () => void;
+    onDeleteEvent: IOnDelteEvent
   }
 
 export default function KalendEventDialog({ newEvent, event, onCancelEvent, ...rest}: IKalendEventDialog) {
-
   const [startDate, setStartDate] = useState(dayjs(event.startAt))
   const [endDate, setEndDate] = useState(dayjs(event.endAt))
   const [summary, setSummary] = useState((!newEvent ? event.summary : ''))
-  const [deleteAlert, setDeleteAlert] = useState(false);
+  const [deleteAlert, setDeleteAlert] = useState(false)
 
   function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -60,11 +60,14 @@ export default function KalendEventDialog({ newEvent, event, onCancelEvent, ...r
 
   function handleDeleteEvent() {
     setDeleteAlert(false)
+    if (!newEvent && 'onDeleteEvent' in rest) {
+      rest.onDeleteEvent(event.id)
+    }  
   }
   
   return (
       <Dialog open={true}>
-        {deleteAlert && 
+        {deleteAlert && !newEvent &&
           <AlertDialog 
             title='Deseja excluir esse evento' 
             handleClose={() => setDeleteAlert(false)}

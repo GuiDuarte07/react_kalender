@@ -17,7 +17,7 @@ type DialogEvent = {active: boolean; mode: "NEW" | "EDIT"}
 
 export default function Home() {
   const [eventDialogOpen, setEventDialogOpen] = useState<DialogEvent>({active: false, mode: 'NEW'})
-  const { eventState, createEvent, editEvent } = useContext(EventContext) as IEventContext;
+  const { eventState, createEvent, editEvent, deleteEvent } = useContext(EventContext) as IEventContext;
   const eventData = useRef<EventChanger>();
 
   function closeDialog() {
@@ -50,6 +50,11 @@ export default function Home() {
     closeDialog()
   }
 
+  function executeDeleteEvent(id: number) {
+    deleteEvent(id)
+    closeDialog()
+  }
+
   return (
     <main className='min-w-full min-h-screen flex'>
       {
@@ -64,6 +69,7 @@ export default function Home() {
           : 
           eventData.current && ("id" in eventData.current) &&
             <KalendEventDialog
+              onDeleteEvent={executeDeleteEvent}
               event={eventData.current} 
               newEvent={false} 
               onCancelEvent={closeDialog}
