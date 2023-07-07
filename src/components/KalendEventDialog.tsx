@@ -13,6 +13,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MultiInputDateTimeRangeField } from '@mui/x-date-pickers-pro/MultiInputDateTimeRangeField';
 import {useState} from 'react'
+import ClearIcon from '@mui/icons-material/Clear';
 
 
 type IOnEditEvent = (id: number, startAt: string, endAt: string, summary: string) => void
@@ -86,6 +87,8 @@ export default function KalendEventDialog({ newEvent, event, onCancelEvent, ...r
             </LocalizationProvider>
 
             <TextField autoFocus  className='w-full mt-8' placeholder='Insira um resumo para esse evento' value={summary} onChange={e => setSummary(e.target.value)} />
+
+            {!newEvent && <Button className='mt-4' variant="text"><ClearIcon/> Excluir esse evento</Button>}
 
           </DialogContent>
           <DialogActions>
