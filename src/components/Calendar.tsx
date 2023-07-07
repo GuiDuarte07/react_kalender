@@ -1,17 +1,18 @@
 import { IKalendEvent } from '@/interfaces/Kalend'
 import Kalend, { CalendarView } from 'kalend'
-import { NewEventClickData } from 'kalend/common/interface'
+import { CalendarEvent, NewEventClickData } from 'kalend/common/interface'
 import 'kalend/dist/styles/index.css'
 
 interface ICalendar {
   startNewEvent: (e: NewEventClickData) => void
+  startEditEvent: (e: CalendarEvent) => void
   events: IKalendEvent[]
 }
 
-export const Calendar = ({startNewEvent, events}: ICalendar) => {
+export const Calendar = ({ startNewEvent, startEditEvent, events }: ICalendar) => {
   return <Kalend
-      onEventClick={(e) => console.log(e, "onEventClick")}
-      onNewEventClick={(newEvent) => startNewEvent(newEvent)}
+      onEventClick={startEditEvent}
+      onNewEventClick={startNewEvent}
       events={events}
       initialDate={new Date().toISOString()}
       hourHeight={60}
