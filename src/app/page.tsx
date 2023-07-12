@@ -17,7 +17,7 @@ type DialogEvent = {active: boolean; mode: "NEW" | "EDIT"}
 
 export default function Home() {
   const [eventDialogOpen, setEventDialogOpen] = useState<DialogEvent>({active: false, mode: 'NEW'})
-  const { eventState, createEvent, editEvent, deleteEvent } = useContext(EventContext) as IEventContext;
+  const { eventState, createEvent, editEvent, deleteEvent } = useContext(EventContext);
   const eventData = useRef<EventChanger>();
 
   function closeDialog() {

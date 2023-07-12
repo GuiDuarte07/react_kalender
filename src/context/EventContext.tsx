@@ -32,7 +32,7 @@ export interface IEventContext {
   deleteEvent: (id: number) => void
 }
 
-const EventContext = createContext<IEventContext | null>(null);
+const EventContext = createContext<IEventContext>({} as IEventContext);
 
 
 export const EventContextProvider = ({ children }: IEventContextProvider) => {
