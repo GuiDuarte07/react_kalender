@@ -30,6 +30,7 @@ export interface IEventContext {
   createEvent: (startAt: string, endAt: string, summary: string) => void
   editEvent: (id: number, startAt: string, endAt: string, summary: string) => void
   deleteEvent: (id: number) => void
+  updateEvent: (events: IKalendEvent[]) => void
 }
 
 const EventContext = createContext<IEventContext>({} as IEventContext);
@@ -51,8 +52,12 @@ export const EventContextProvider = ({ children }: IEventContextProvider) => {
     eventDispatch({type: EventReducerActionTypes.DeleteEvent, id})
   }
 
+  function updateEvent(events: IKalendEvent[]) {
+    eventDispatch({type: EventReducerActionTypes.UpdateEvent, events})
+  }
+
   return (
-    <EventContext.Provider value={{eventState, createEvent, editEvent, deleteEvent}}>
+    <EventContext.Provider value={{eventState, createEvent, editEvent, deleteEvent, updateEvent}}>
       {children}
     </EventContext.Provider>
   )

@@ -4,15 +4,17 @@ export enum EventReducerActionTypes {
   NewEvent,
   EditEvent,
   DeleteEvent,
+  UpdateEvent
 }
 
 type Action =
   | {type: EventReducerActionTypes.NewEvent, newEvent: {endAt: string, startAt: string, summary: string} }
   | {type: EventReducerActionTypes.EditEvent, editEvent: {id: number, endAt: string, startAt: string, summary: string}}
   | {type: EventReducerActionTypes.DeleteEvent, id: number}
+  | {type: EventReducerActionTypes.UpdateEvent, events: IKalendEvent[]}
 
 function eventHandleReducer(state: IKalendEvent[], action: Action) {
-  const newState = structuredClone(state)
+  let newState = structuredClone(state)
 
   switch (action.type) {
     case EventReducerActionTypes.NewEvent:
@@ -26,13 +28,17 @@ function eventHandleReducer(state: IKalendEvent[], action: Action) {
       newState[index].startAt = action.editEvent.startAt
       newState[index].endAt = action.editEvent.endAt
       newState[index].summary = action.editEvent.summary
-      break;
+      break
+
     case EventReducerActionTypes.DeleteEvent:
       const idx = newState.findIndex((event) => event.id === action.id)
       if (idx === -1) break
 
       newState.splice(idx, 1)
       break
+    
+    case EventReducerActionTypes.UpdateEvent:
+      newState = action.events
   }
   return newState
 }

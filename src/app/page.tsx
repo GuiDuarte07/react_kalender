@@ -17,7 +17,7 @@ type DialogEvent = {active: boolean; mode: "NEW" | "EDIT"}
 
 export default function Home() {
   const [eventDialogOpen, setEventDialogOpen] = useState<DialogEvent>({active: false, mode: 'NEW'})
-  const { eventState, createEvent, editEvent, deleteEvent } = useContext(EventContext);
+  const { eventState, createEvent, editEvent, deleteEvent, updateEvent } = useContext(EventContext);
   const eventData = useRef<EventChanger>();
 
   function closeDialog() {
@@ -78,7 +78,9 @@ export default function Home() {
       }
       <MiniDrawer/>
       <Container maxWidth="xl">
-      <section className='w-full h-screen'><Calendar startNewEvent={startNewEvent} startEditEvent={startEditEvent} events={eventState} /></section>
+        <section className='w-full h-screen'>
+          <Calendar startNewEvent={startNewEvent} startEditEvent={startEditEvent} updateEvent={updateEvent} events={eventState} />
+        </section>
       </Container>
     </main>
     
