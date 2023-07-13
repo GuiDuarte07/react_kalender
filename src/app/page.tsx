@@ -3,7 +3,7 @@ import { Calendar } from '@/components/Calendar'
 import KalendEventDialog from '@/components/KalendEventDialog';
 import MiniDrawer from '@/components/Drawer';
 import { Container } from '@mui/material'
-import { useContext, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { CalendarEvent, NewEventClickData } from 'kalend/common/interface';
 import { IKalendEvent } from '@/interfaces/Kalend';
 import EventContext, { IEventContext } from '@/context/EventContext';

@@ -15,6 +15,7 @@ interface IAlertDialog {
 export default function AlertDialog({ title, description, handleClose, handleConfirm }: IAlertDialog) {
   return (
     <Dialog
+      onClose={handleClose}
       open={true}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"

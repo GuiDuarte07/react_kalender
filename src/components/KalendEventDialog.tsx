@@ -10,7 +10,7 @@ import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MultiInputDateTimeRangeField } from '@mui/x-date-pickers-pro/MultiInputDateTimeRangeField';
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import ClearIcon from '@mui/icons-material/Clear';
 import AlertDialog from './AlertDialog';
 import EventContext, { IEventContext } from '@/context/EventContext';
@@ -66,7 +66,7 @@ export default function KalendEventDialog({ newEvent, event, onCancelEvent, ...r
   }
   
   return (
-      <Dialog open={true}>
+      <Dialog open={true} onClose={onCancelEvent}>
         {deleteAlert && !newEvent &&
           <AlertDialog 
             title='Deseja excluir esse evento' 
