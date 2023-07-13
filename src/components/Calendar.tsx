@@ -14,7 +14,7 @@ export const Calendar = ({ startNewEvent, startEditEvent, updateEvent, events }:
   return <Kalend
       onEventClick={startEditEvent}
       onNewEventClick={startNewEvent}
-      onEventDragFinish={(_, __, events) => updateEvent(events)}
+      onEventDragFinish={(_, __, events,) => updateEvent(events)}
       events={events}
       initialDate={new Date().toISOString()}
       hourHeight={60}
