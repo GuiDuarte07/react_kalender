@@ -8,13 +8,14 @@ export enum EventReducerActionTypes {
 }
 
 type Action =
-  | {type: EventReducerActionTypes.NewEvent, newEvent: {endAt: string, startAt: string, summary: string}}
-  | {type: EventReducerActionTypes.EditEvent, editEvent: {id: number, endAt: string, startAt: string, summary: string}}
-  | {type: EventReducerActionTypes.DeleteEvent, id: number}
+  | {type: EventReducerActionTypes.NewEvent, newEvent: {endAt: string, startAt: string, summary: string}, prevEventData: React.MutableRefObject<IKalendEvent[] | undefined>}
+  | {type: EventReducerActionTypes.EditEvent, editEvent: {id: number, endAt: string, startAt: string, summary: string}, prevEventData: React.MutableRefObject<IKalendEvent[] | undefined>}
+  | {type: EventReducerActionTypes.DeleteEvent, id: number, prevEventData: React.MutableRefObject<IKalendEvent[] | undefined>}
   | {type: EventReducerActionTypes.UpdateEvent, events: IKalendEvent[], prevEventData: React.MutableRefObject<IKalendEvent[] | undefined>}
 
 function eventHandleReducer(state: IKalendEvent[], action: Action) {
   let newState = structuredClone(state)
+  action.prevEventData.current = structuredClone(state)
 
   switch (action.type) {
     case EventReducerActionTypes.NewEvent:
@@ -38,7 +39,6 @@ function eventHandleReducer(state: IKalendEvent[], action: Action) {
       break
     
     case EventReducerActionTypes.UpdateEvent:
-      action.prevEventData.current = newState
       newState = action.events
     }
   console.log(newState)

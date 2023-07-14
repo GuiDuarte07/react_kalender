@@ -57,7 +57,7 @@ export const EventContextProvider = ({ children }: IEventContextProvider) => {
   const prevEventData = useRef<IKalendEvent[]>()
   const eventData = useRef<EventChanger>()
   const [eventDialogOpen, setEventDialogOpen] = useState<DialogEvent>({active: false, mode: 'NEW'})
-  const { undo, startUndo, clearUndo } = useUndo(3000)
+  const { undo, startUndo, clearUndo } = useUndo(5000)
 
   function closeDialog() {
     setEventDialogOpen(prev => ({...prev, active: false}))
@@ -80,24 +80,30 @@ export const EventContextProvider = ({ children }: IEventContextProvider) => {
   }
 
   function executeCreateEvent(startAt: string, endAt: string, summary: string) {
-    eventDispatch({type: EventReducerActionTypes.NewEvent, newEvent: {startAt, endAt, summary}})
+    clearUndo()
+    eventDispatch({type: EventReducerActionTypes.NewEvent, newEvent: {startAt, endAt, summary}, prevEventData})
     closeDialog()
+    startUndo('Deseja desfazer a criação desse evento?')
   }
 
   function executeEditEvent(id: number, startAt: string, endAt: string, summary: string) {
-    eventDispatch({type: EventReducerActionTypes.EditEvent, editEvent: {startAt, endAt, summary, id}})
+    clearUndo()
+    eventDispatch({type: EventReducerActionTypes.EditEvent, editEvent: {startAt, endAt, summary, id}, prevEventData})
     closeDialog()
+    startUndo('Deseja desfazer a alteração desse evento?')
   }
 
   function executeDeleteEvent(id: number) {
-    eventDispatch({type: EventReducerActionTypes.DeleteEvent, id})
+    clearUndo()
+    eventDispatch({type: EventReducerActionTypes.DeleteEvent, id, prevEventData})
     closeDialog()
+    startUndo('Deseja desfazer a removação desse evento?')
   }
 
   function executeUpdateEvent (events: IKalendEvent[]) {
     clearUndo()
     eventDispatch({type: EventReducerActionTypes.UpdateEvent, events, prevEventData})
-    startUndo('Deseja desfazer a alteração?')
+    startUndo('Deseja desfazer a alteração desse evento?')
   }
 
   function executeUndoEvent() {
