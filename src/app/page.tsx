@@ -3,85 +3,43 @@ import { Calendar } from '@/components/Calendar'
 import KalendEventDialog from '@/components/KalendEventDialog'
 import MiniDrawer from '@/components/Drawer'
 import { Container } from '@mui/material'
-import { useContext, useEffect, useRef, useState } from 'react'
-import { CalendarEvent, NewEventClickData } from 'kalend/common/interface'
-import { IKalendEvent } from '@/interfaces/Kalend'
+import { useContext } from 'react'
 import EventContext from '@/context/EventContext'
 import { UndoSnackbar } from '@/components/UndoSnackbar'
-import useUndo from '@/hooks/useUndo'
-
-
-type EventChanger = 
-  | {id: number, startAt: string, endAt: string, summary: string}
-  | {startAt: string, endAt: string}
-
-type DialogEvent = {active: boolean; mode: "NEW" | "EDIT"}
 
 export default function Home() {
-  const [eventDialogOpen, setEventDialogOpen] = useState<DialogEvent>({active: false, mode: 'NEW'})
-  const { eventState, createEvent, editEvent, deleteEvent, updateEvent } = useContext(EventContext)
-  const { undo, startUndo, clearUndo } = useUndo(3000)
-  const eventData = useRef<EventChanger>()
-  const prevEventData = useRef<IKalendEvent[]>()
-
-  function closeDialog() {
-    setEventDialogOpen(prev => ({...prev, active: false}))
-    eventData.current = undefined
-  }
-
-  function startNewEvent(kalendEventClick: NewEventClickData) {
-    const {startAt, endAt} = kalendEventClick
-    if (!startAt || !endAt) return
-
-    eventData.current = {startAt, endAt}
-    setEventDialogOpen({active: true, mode: 'NEW'})
-  }
-
-  function startEditEvent(kalendEditClick: CalendarEvent) {
-    const {id, startAt, endAt, summary} = kalendEditClick
-
-    eventData.current = {id, summary, startAt, endAt}
-    setEventDialogOpen({active: true, mode: 'EDIT'})
-  }
-
-  function executeCreateEvent(startAt: string, endAt: string, summary: string) {
-    createEvent(startAt, endAt, summary)
-    closeDialog()
-  }
-
-  function executeEditEvent(id: number, startAt: string, endAt: string, summary: string) {
-    editEvent(id, startAt, endAt, summary)
-    closeDialog()
-  }
-
-  function executeDeleteEvent(id: number) {
-    deleteEvent(id)
-    closeDialog()
-  }
-
-  function executeUpdateEvent(events: IKalendEvent[]) {
-    clearUndo()
-    prevEventData.current = eventState
-    updateEvent(events)
-    startUndo('Deseja desfazer a alteração?')
-  }
+  const { 
+    eventState, 
+    eventDialogOpen,
+    eventData,
+    executeCreateEvent,
+    executeDeleteEvent,
+    executeEditEvent,
+    executeUpdateEvent,
+    startEditEvent,
+    startNewEvent,
+    undo,
+    clearUndo,
+    executeUndoEvent,
+    closeDialog
+  } = useContext(EventContext)
 
   return (
     <main className='min-w-full min-h-screen flex'>
-      {undo && <UndoSnackbar handleClose={() => true} handleUndo={() => true} message={undo} />}
+      {undo && <UndoSnackbar handleClose={clearUndo} handleUndo={executeUndoEvent} message={undo} />}
       {
-        eventDialogOpen.active && eventDialogOpen.mode === 'NEW' && eventData.current ? 
+        eventDialogOpen.active && eventDialogOpen.mode === 'NEW' && eventData ? 
             <KalendEventDialog 
               onSubmitEvent={executeCreateEvent} 
               newEvent={true} 
-              event={eventData.current} 
+              event={eventData} 
               onCancelEvent={closeDialog} 
             /> 
           : 
-          eventData.current && ("id" in eventData.current) &&
+          eventData && ("id" in eventData) &&
             <KalendEventDialog
               onDeleteEvent={executeDeleteEvent}
-              event={eventData.current} 
+              event={eventData} 
               newEvent={false} 
               onCancelEvent={closeDialog}
               onEditEvent={executeEditEvent}

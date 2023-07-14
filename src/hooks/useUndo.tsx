@@ -10,9 +10,8 @@ const useUndo = (timer: number) => {
   }
 
   function clearUndo() {
-    !undo && setUndo('')
+    setUndo('')
     setIntervalUndo.current && clearInterval(setIntervalUndo.current)
-    console.log(setIntervalUndo.current)
     setIntervalUndo.current = undefined
   }
 
