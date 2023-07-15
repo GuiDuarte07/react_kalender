@@ -10,23 +10,6 @@ interface IEventContextProvider {
   children: React.ReactNode
 }
 
-const eventsExample: IKalendEvent[] = [
-  {
-      id: 1,
-      startAt: '2023-07-21T18:00:00.000Z',
-      endAt: '2023-07-21T19:00:00.000Z',
-      summary: 'test',
-      color: 'blue',
-  },
-  {
-      id: 2,
-      startAt: '2023-07-21T18:00:00.000Z',
-      endAt: '2023-07-21T19:00:00.000Z',
-      summary: 'test',
-      color: 'blue',
-  }
-]
-
 type DialogEvent = {active: boolean; mode: "NEW" | "EDIT"}
 
 type EventChanger = 
@@ -53,11 +36,16 @@ export interface IEventContext {
 const EventContext = createContext<IEventContext>({} as IEventContext)
 
 export const EventContextProvider = ({ children }: IEventContextProvider) => {
-  const [eventState, eventDispatch] = useReducer(eventHandleReducer, eventsExample)
+  const [eventState, eventDispatch] = useReducer(eventHandleReducer, JSON.parse(localStorage.getItem("events") ?? "[]") as IKalendEvent[])
   const prevEventData = useRef<IKalendEvent[]>()
   const eventData = useRef<EventChanger>()
   const [eventDialogOpen, setEventDialogOpen] = useState<DialogEvent>({active: false, mode: 'NEW'})
   const { undo, startUndo, clearUndo } = useUndo(5000)
+
+  useEffect(() => {
+    if (eventState.length)
+      localStorage.setItem("events", JSON.stringify(eventState))
+  }, [eventState])
 
   function closeDialog() {
     setEventDialogOpen(prev => ({...prev, active: false}))
