@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import eventHandleReducer, { EventReducerActionTypes } from "@/hooks/EventHandleReducer";
 import useUndo from "@/hooks/useUndo";
@@ -60,6 +60,13 @@ export const EventContextProvider = ({ children }: IEventContextProvider) => {
     setEventDialogOpen({active: true, mode: 'NEW'})
   }
 
+  function undoNDialogRoutine(message: string, dispatch: () => void) {
+    clearUndo()
+    dispatch()
+    closeDialog()
+    startUndo(message)
+  }
+
   function startEditEvent(kalendEditClick: CalendarEvent) {
     const {id, startAt, endAt, summary} = kalendEditClick
 
@@ -68,30 +75,31 @@ export const EventContextProvider = ({ children }: IEventContextProvider) => {
   }
 
   function executeCreateEvent(startAt: string, endAt: string, summary: string) {
-    clearUndo()
-    eventDispatch({type: EventReducerActionTypes.NewEvent, newEvent: {startAt, endAt, summary}, prevEventData})
-    closeDialog()
-    startUndo('Deseja desfazer a criação desse evento?')
+    undoNDialogRoutine(
+      'Deseja desfazer a criação desse evento?', 
+      () => eventDispatch({type: EventReducerActionTypes.NewEvent, newEvent: {startAt, endAt, summary}, prevEventData})
+    )
   }
 
   function executeEditEvent(id: number, startAt: string, endAt: string, summary: string) {
-    clearUndo()
-    eventDispatch({type: EventReducerActionTypes.EditEvent, editEvent: {startAt, endAt, summary, id}, prevEventData})
-    closeDialog()
-    startUndo('Deseja desfazer a alteração desse evento?')
+    undoNDialogRoutine(
+      'Deseja desfazer a alteração desse evento?', 
+      () => eventDispatch({type: EventReducerActionTypes.EditEvent, editEvent: {startAt, endAt, summary, id}, prevEventData})
+    )
   }
 
   function executeDeleteEvent(id: number) {
-    clearUndo()
-    eventDispatch({type: EventReducerActionTypes.DeleteEvent, id, prevEventData})
-    closeDialog()
-    startUndo('Deseja desfazer a removação desse evento?')
+    undoNDialogRoutine(
+      'Deseja desfazer a removação desse evento?', 
+      () => eventDispatch({type: EventReducerActionTypes.DeleteEvent, id, prevEventData})
+    )
   }
 
   function executeUpdateEvent (events: IKalendEvent[]) {
-    clearUndo()
-    eventDispatch({type: EventReducerActionTypes.UpdateEvent, events, prevEventData})
-    startUndo('Deseja desfazer a alteração desse evento?')
+    undoNDialogRoutine(
+      'Deseja desfazer a alteração desse evento?', 
+      () => eventDispatch({type: EventReducerActionTypes.UpdateEvent, events, prevEventData})
+    )
   }
 
   function executeUndoEvent() {
