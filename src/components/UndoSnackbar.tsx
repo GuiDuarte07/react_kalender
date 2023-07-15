@@ -2,24 +2,26 @@ import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { useContext } from 'react';
+import EventContext from '@/context/EventContext';
 
-interface IUndoSnackbar {
-  message: string
-  handleClose: () => void
-  handleUndo: () => void
-}
+export const UndoSnackbar = () => {
+  const {
+    undo,
+    clearUndo,
+    executeUndoEvent,
+  } = useContext(EventContext)
 
-export const UndoSnackbar = ({ message, handleClose, handleUndo }: IUndoSnackbar) => {
   const action = (
     <>
-      <Button size="small" onClick={handleUndo}>
+      <Button size="small" onClick={executeUndoEvent}>
         Desfazer
       </Button>
       <IconButton
         size="small"
         aria-label="close"
         color="inherit"
-        onClick={handleClose}
+        onClick={clearUndo}
       >
         <CloseIcon fontSize="small" />
       </IconButton>
@@ -30,7 +32,7 @@ export const UndoSnackbar = ({ message, handleClose, handleUndo }: IUndoSnackbar
   <Snackbar
     open={true}
     action={action}
-    message={message}
+    message={undo}
     anchorOrigin={{horizontal: 'center', vertical: 'bottom'}}
   />
   )

@@ -9,24 +9,18 @@ import { UndoSnackbar } from '@/components/UndoSnackbar'
 
 export default function Home() {
   const { 
-    eventState, 
     eventDialogOpen,
     eventData,
     executeCreateEvent,
     executeDeleteEvent,
     executeEditEvent,
-    executeUpdateEvent,
-    startEditEvent,
-    startNewEvent,
     undo,
-    clearUndo,
-    executeUndoEvent,
     closeDialog
   } = useContext(EventContext)
 
   return (
     <main className='min-w-full min-h-screen flex'>
-      {undo && <UndoSnackbar handleClose={clearUndo} handleUndo={executeUndoEvent} message={undo} />}
+      {undo && <UndoSnackbar />}
       {
         eventDialogOpen.active && eventDialogOpen.mode === 'NEW' && eventData ? 
             <KalendEventDialog 
@@ -48,7 +42,7 @@ export default function Home() {
       <MiniDrawer/>
       <Container maxWidth="xl">
         <section className='w-full h-screen'>
-          <Calendar startNewEvent={startNewEvent} startEditEvent={startEditEvent} updateEvent={executeUpdateEvent} events={eventState} />
+          <Calendar />
         </section>
       </Container>
     </main>
